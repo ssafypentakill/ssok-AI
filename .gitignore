@@ -1,0 +1,19 @@
+# Python 가상환경
+.venv/
+venv/
+
+# Python 캐시
+__pycache__/
+*.py[cod]
+
+# 실제 환경 변수와 비밀값
+.env
+.env.*
+!.env.example
+
+# 테스트 캐시
+.pytest_cache/
+
+# 운영체제 파일
+.DS_Store
+Thumbs.db
