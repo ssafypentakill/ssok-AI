@@ -1,0 +1,278 @@
+{
+  "schema_version": 1,
+  "seed": 42,
+  "product_count": 300,
+  "user_count": 50,
+  "sessions_per_warm_user": 60,
+  "snapshot_at": "2026-10-27T00:00:00+09:00",
+  "event_start": "2026-09-01T00:00:00+09:00",
+  "train_end_exclusive": "2026-10-17T00:00:00+09:00",
+  "validation_end_exclusive": "2026-10-22T00:00:00+09:00",
+  "timezone": "Asia/Seoul",
+  "currency": "KRW",
+  "synthetic": true,
+  "cold_user_ids": [
+    46,
+    47,
+    48,
+    49,
+    50
+  ],
+  "cold_product_ids": [
+    283,
+    284,
+    285,
+    286,
+    287,
+    288,
+    289,
+    290,
+    291,
+    292,
+    293,
+    294,
+    295,
+    296,
+    297,
+    298,
+    299,
+    300
+  ],
+  "suggested_weights": {
+    "view": 1,
+    "like": 3,
+    "cart": 5,
+    "purchase": 10
+  },
+  "interaction_counts": {
+    "view": 5400,
+    "cart": 1609,
+    "like": 948,
+    "purchase": 484
+  },
+  "category_counts": {
+    "디지털": 50,
+    "패션": 50,
+    "리빙": 50,
+    "주방": 50,
+    "스포츠": 50,
+    "뷰티": 50
+  },
+  "sources": [
+    "ssok.png",
+    "ssok-프로젝트-계획.md"
+  ],
+  "note": "ERD-derived CSV fixtures, not a production SQL seed. See README for assumptions.",
+  "files": {
+    "erd/product.csv": {
+      "rows": 300,
+      "columns": [
+        "id",
+        "name",
+        "description",
+        "brand",
+        "category",
+        "price",
+        "stock_quantity",
+        "image",
+        "status",
+        "created_at",
+        "updated_at"
+      ],
+      "sha256": "eb4ab8ffcea23715aed62d8a21a7c268002abf2a4baf482b79b05a66e4bbcf30"
+    },
+    "erd/user.csv": {
+      "rows": 50,
+      "columns": [
+        "id",
+        "email",
+        "provider",
+        "password_hash",
+        "provider_user_id",
+        "status",
+        "created_at",
+        "updated_at"
+      ],
+      "sha256": "5be04b51ea106dba0ace2a44e410cebbeebe2e692168619f41e3c9d7ac1a3e7b"
+    },
+    "erd/cart.csv": {
+      "rows": 45,
+      "columns": [
+        "id",
+        "created_at",
+        "updated_at"
+      ],
+      "sha256": "9f7d7af676c49c2ea59c3082a7297bc249dca30b747f43b72076c6e57881d920"
+    },
+    "erd/cart_item.csv": {
+      "rows": 645,
+      "columns": [
+        "id",
+        "cart_id",
+        "product_id",
+        "quantity",
+        "created_at",
+        "updated_at"
+      ],
+      "sha256": "3fc4841212b7929cea2794cece18b4457c39e99cef4f575576fcd42610f4e28a"
+    },
+    "erd/orders.csv": {
+      "rows": 723,
+      "columns": [
+        "order_id",
+        "member_id",
+        "order_status",
+        "order_datetime",
+        "is_deleted",
+        "shipping_fee",
+        "total_amount",
+        "id2",
+        "id3"
+      ],
+      "sha256": "efd705332076cecc1d9d306ed32e3549e4fe57b5164a285f5852de7ff4100b69"
+    },
+    "erd/order_item.csv": {
+      "rows": 801,
+      "columns": [
+        "id",
+        "product_id",
+        "quantity",
+        "created_at",
+        "updated_at",
+        "product_name",
+        "unit_price",
+        "order_id"
+      ],
+      "sha256": "dcee94f0ccd855b817c219982e6d62d3c1cbc981e5e6cb21429c904a1a18b038"
+    },
+    "erd/payments.csv": {
+      "rows": 723,
+      "columns": [
+        "id",
+        "order_id",
+        "member_id",
+        "payment_key",
+        "amount",
+        "status",
+        "approved_at",
+        "canceled_at",
+        "cancel_reason",
+        "created_at",
+        "updated_at",
+        "order_id2"
+      ],
+      "sha256": "31030632345314d6e5574fa67a760644e9cef8f603a0a70c00565be84f7ae9ca"
+    },
+    "products.csv": {
+      "rows": 300,
+      "columns": [
+        "product_id",
+        "name",
+        "category",
+        "brand",
+        "price",
+        "description",
+        "stock",
+        "is_active",
+        "status",
+        "created_at",
+        "updated_at",
+        "embedding_text"
+      ],
+      "sha256": "4bb39f10854c6ff939701fd1a6963e5607804350c2a46bbb2c0cc382f162575c"
+    },
+    "users.csv": {
+      "rows": 50,
+      "columns": [
+        "user_id",
+        "status",
+        "created_at"
+      ],
+      "sha256": "022da9ec0dd8063b47cec6154be6456e654678e4326ab755ba49843e0dd7baa1"
+    },
+    "interactions.csv": {
+      "rows": 8441,
+      "columns": [
+        "event_id",
+        "user_id",
+        "product_id",
+        "interaction_type",
+        "timestamp",
+        "quantity",
+        "session_id",
+        "order_id",
+        "source_table",
+        "source_id"
+      ],
+      "sha256": "6f0d6d0a198c73865ef09d48025f02df3b75f5421a497b39b71569ab5ef8ade4"
+    },
+    "support/cart_user_mapping.csv": {
+      "rows": 45,
+      "columns": [
+        "cart_id",
+        "user_id"
+      ],
+      "sha256": "4ac52c0739b20d6bdb830396e7b4012d3849afe51cefc34dd4abd248ae255c46"
+    },
+    "fixtures/user_preferences.csv": {
+      "rows": 50,
+      "columns": [
+        "user_id",
+        "scenario",
+        "primary_category",
+        "secondary_category",
+        "min_price",
+        "max_price"
+      ],
+      "sha256": "e1122f10e6d85259d6164a2c86a6c1815a796ec7201155c04300e466af6b93e1"
+    },
+    "splits/train.csv": {
+      "rows": 7312,
+      "columns": [
+        "event_id",
+        "user_id",
+        "product_id",
+        "interaction_type",
+        "timestamp",
+        "quantity",
+        "session_id",
+        "order_id",
+        "source_table",
+        "source_id"
+      ],
+      "sha256": "44d8f8cbc79d156eb68b00ed313d981fd5e74880260cb01f9d82e91ca153a4ea"
+    },
+    "splits/validation.csv": {
+      "rows": 783,
+      "columns": [
+        "event_id",
+        "user_id",
+        "product_id",
+        "interaction_type",
+        "timestamp",
+        "quantity",
+        "session_id",
+        "order_id",
+        "source_table",
+        "source_id"
+      ],
+      "sha256": "1c4a8b5c9d9b8e96085dc527f7e5bcc67ede3cf3271cf54d8565c25f5f18a6a7"
+    },
+    "splits/test.csv": {
+      "rows": 346,
+      "columns": [
+        "event_id",
+        "user_id",
+        "product_id",
+        "interaction_type",
+        "timestamp",
+        "quantity",
+        "session_id",
+        "order_id",
+        "source_table",
+        "source_id"
+      ],
+      "sha256": "dc30205921699f3acaa7b087018eaa90fe5ae82d6c21e18ef3a39d15ae75ad80"
+    }
+  }
+}
