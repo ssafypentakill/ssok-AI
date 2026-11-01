@@ -13,6 +13,7 @@ __pycache__/
 
 # 테스트 캐시
 .pytest_cache/
+.cache/
 
 # 운영체제 파일
 .DS_Store

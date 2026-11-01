@@ -2,7 +2,10 @@
 
 Run from the repository root: python -m app.recommendation.data_loader
 """
-
+"""
+데이터 로딩!
+csv파일에 있는 데이터 중 string -> time/num 으로 바꿈
+"""
 import csv
 from dataclasses import dataclass
 from datetime import datetime

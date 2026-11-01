@@ -36,7 +36,7 @@ class RecommenderTests(unittest.TestCase):
                           event(2, 3, "cart")],
         )
         self.data.users[4] = {"status": "inactive"}
-        self.model = Recommender(self.data)
+        self.model = Recommender(self.data, backend="tfidf")
 
     def test_anonymous_and_new_user_receive_same_popular_results(self):
         anonymous = self.model.recommend()
@@ -56,7 +56,7 @@ class RecommenderTests(unittest.TestCase):
     def test_less_evidence_means_less_personalization(self):
         strong = self.model.recommend(1)["personalization_weight"]
         self.data.interactions = [event(1, 1, "view")]
-        weak = Recommender(self.data).recommend(1)["personalization_weight"]
+        weak = Recommender(self.data, backend="tfidf").recommend(1)["personalization_weight"]
         self.assertGreater(weak, 0)
         self.assertLess(weak, strong)
 
@@ -73,16 +73,16 @@ class RecommenderTests(unittest.TestCase):
 
     def test_empty_history_and_catalog(self):
         self.data.interactions = []
-        model = Recommender(self.data)
+        model = Recommender(self.data, backend="tfidf")
         self.assertEqual(model.recommend(1)["mode"], "popular")
         self.assertEqual(model.recommend(), model.recommend())
         self.data.products = {}
-        self.assertEqual(Recommender(self.data).recommend()["items"], [])
+        self.assertEqual(Recommender(self.data, backend="tfidf").recommend()["items"], [])
 
     def test_real_mock_data_default_and_personalized(self):
         data = load_recommendation_data()
         self.assertEqual(len(data.interactions), 7312)
-        model = Recommender(data)
+        model = Recommender(data, backend="tfidf")
         self.assertEqual(model.recommend(46)["mode"], "popular")
         self.assertEqual(model.recommend(1)["mode"], "personalized")
         self.assertEqual(len(model.recommend(1)["items"]), 10)

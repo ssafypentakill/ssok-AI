@@ -18,17 +18,36 @@ python -m unittest discover -s tests -v
 
 ## 추천 실행 및 테스트
 
-외부 패키지 없이 Python 표준 라이브러리로 실행합니다.
+기본 추천 모델은 Hugging Face의 `intfloat/multilingual-e5-small`입니다.
+프로젝트 가상환경에서 의존성을 설치하고 실행합니다.
+
+```powershell
+cd C:\Users\PC\Desktop\SOOKAI\ssok-AI
+# .venv가 없다면 생성
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+모델을 웹사이트에서 수동으로 받을 필요는 없습니다. 첫 E5 실행 시 인터넷에 연결해
+자동 다운로드합니다. 모델은 `.cache/recommendation/models/`, 상품 벡터는
+`.cache/recommendation/vectors-*.json`에 저장되며 Git에서 제외됩니다.
+같은 상품 ID·설명은 벡터 캐시를 재사용하므로 이후에는 모델을 로드하지 않습니다.
+상품 설명이 바뀌면 내려받은 모델로 벡터를 다시 계산합니다.
+모델은 CPU에서 실행하며, 외부 임베딩 API를 호출하거나 상품 설명을 업로드하지 않습니다.
+첫 다운로드에는 시간과 디스크 공간이 필요합니다.
 
 ```powershell
 # 비로그인: 인기 추천
-python -m app.recommendation.recommender
+.\.venv\Scripts\python.exe -m app.recommendation.recommender
 
 # 행동이 없는 회원: 인기 추천
-python -m app.recommendation.recommender --user-id 46 --limit 5
+.\.venv\Scripts\python.exe -m app.recommendation.recommender --user-id 46 --limit 5
 
-# 행동이 있는 회원: TF-IDF 개인화 + 인기 추천
-python -m app.recommendation.recommender --user-id 1 --limit 5
+# 행동이 있는 회원: E5 AI 임베딩 개인화 + 인기 추천
+.\.venv\Scripts\python.exe -m app.recommendation.recommender --user-id 1 --limit 5
+
+# 기존 TF-IDF와 비교 (모델 다운로드 불필요)
+.\.venv\Scripts\python.exe -m app.recommendation.recommender --backend tfidf --user-id 1 --limit 5
 
 # 추천 기능 테스트만 실행
 python -m unittest discover -s tests -p test_recommender.py -v
@@ -41,7 +60,9 @@ python -m unittest discover -s tests -v
 `personalization`은 최종 점수에서 개인화 점수가 차지하는 비중입니다.
 
 `app/recommendation/data_loader.py`가 기본적으로 train 데이터만 읽고,
-`app/recommendation/recommender.py`가 상품 텍스트의 TF-IDF 벡터와 행동 가중치
+`app/recommendation/embeddings.py`가 학습된 E5 모델로 상품 벡터를 생성합니다.
+상품 간 유사도 비교이므로 공식 모델 안내에 따라 모든 설명 앞에 `query: `를 붙입니다.
+`app/recommendation/recommender.py`가 상품 벡터와 행동 가중치
 (조회 1 / 좋아요 3 / 장바구니 5 / 구매 10)로 추천합니다.
 사용자·상품·행동 종류별 반복 횟수는 최대 3회까지 반영하며, 수량은 가중하지 않습니다.
 개인화 비중은 누적 행동 점수 / 10으로 계산하고 최대 80%로 제한합니다.
@@ -55,3 +76,16 @@ python -m unittest discover -s tests -v
 이 실행은 현재 상품 스냅샷을 대상으로 한 추천 미리보기입니다.
 과거 시점 Recall/NDCG 평가나 실시간 행동 수집, Java API 연결은 포함하지 않습니다.
 현재 판매 상태를 그대로 사용해 과거 추천 성능을 평가하면 안 됩니다.
+
+일반 테스트는 네트워크나 모델 다운로드 없이 TF-IDF 및 가짜 인코더로 로직을 검증합니다.
+실제 E5 모델 통합 테스트는 다음과 같이 별도 실행합니다.
+
+```powershell
+$env:RUN_E5_INTEGRATION = "1"
+.\.venv\Scripts\python.exe -m unittest discover -s tests -p test_embeddings.py -v
+Remove-Item Env:RUN_E5_INTEGRATION
+```
+
+E5 벡터의 유사도 분포는 TF-IDF와 다르므로 기존 인기/개인화 혼합 비율은 초기값입니다.
+모델 교체 후 실제 추천 품질과 비율은 validation으로 비교해야 합니다.
+모델 설명과 MIT 라이선스: https://huggingface.co/intfloat/multilingual-e5-small
