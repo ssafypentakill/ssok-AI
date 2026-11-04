@@ -89,3 +89,34 @@ Remove-Item Env:RUN_E5_INTEGRATION
 E5 벡터의 유사도 분포는 TF-IDF와 다르므로 기존 인기/개인화 혼합 비율은 초기값입니다.
 모델 교체 후 실제 추천 품질과 비율은 validation으로 비교해야 합니다.
 모델 설명과 MIT 라이선스: https://huggingface.co/intfloat/multilingual-e5-small
+
+## JAVA - PYTHON DB  연동
+Java 서버(Spring Boot)
+    │
+    │ HTTP 요청: “회원 1번(로그인)에게 추천할 상품 알려줘”
+    ▼
+Python 서버(FastAPI)
+    │
+    ├─ PostgreSQL에서 상품·사용자 행동 조회
+    ├─ Python 추천 로직 실행
+    │
+    ▼
+Java에 응답: 추천 상품 ID 목록
+
+
+① 사용자가 쇼핑몰 메인 화면에 접속
+                ↓
+② 프론트엔드가 Java에 추천 상품 요청
+                ↓
+③ Java가 로그인 정보를 확인하고
+   FastAPI에 해당 회원의 추천 요청
+                ↓
+④ FastAPI가 행동 이력으로 추천 계산
+   → Java에 상품 ID 목록 반환
+                ↓
+⑤ Java가 상품명·가격·이미지와 판매 상태 확인
+   → 프론트엔드에 상품 목록 반환
+                ↓
+⑥ 프론트엔드가 추천 상품 칸에 카드로 표시
+
+
