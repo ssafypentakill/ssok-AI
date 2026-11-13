@@ -4,7 +4,7 @@
 
 ## DB 구축
 
-Windows 노트북에 PostgreSQL 16 + pgvector를 띄우고 **목업 상품 22개와 상품별 384차원 E5 벡터 22개**를 저장하는 절차입니다. Docker Desktop을 실행하고 Git, JDK 21, Python 3.11 이상을 준비하세요. 아래 명령은 **PowerShell** 기준입니다.
+Windows 노트북에 PostgreSQL 16 + pgvector를 띄우고 **목업 상품 22개와 상품별 384차원 E5 벡터 22개**를 저장하는 절차입니다. Docker Desktop을 실행하고 Git, JDK 21, Python 3.11 이상을 준비하세요. 아래 명령은 PowerShell 기준입니다.
 
 ### 1. 두 저장소와 로컬 설정 준비
 
