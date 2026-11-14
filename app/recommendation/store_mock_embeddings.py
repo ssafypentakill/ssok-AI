@@ -1,6 +1,7 @@
 """Populate product_embedding for the local seed_postgres.py catalog."""
 
 import json
+import os
 import subprocess
 
 from app.recommendation.embeddings import MODEL_NAME, e5_vectors
@@ -14,9 +15,13 @@ FROM public.product WHERE image_url LIKE '/mock/ssok-reco-v1/%'
 
 
 def sql(statement):
+    if os.environ.get("PGHOST"):
+        command = ["psql", "-X", "-qAt", "-v", "ON_ERROR_STOP=1"]
+    else:
+        command = ["docker", "exec", "-i", "-e", "PGCLIENTENCODING=UTF8", "psql", "sh", "-c",
+                   'exec psql -X -qAt -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"']
     result = subprocess.run(
-        ["docker", "exec", "-i", "-e", "PGCLIENTENCODING=UTF8", "psql", "sh", "-c",
-         'exec psql -X -qAt -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB"'],
+        command,
         input=statement, stdout=subprocess.PIPE, encoding="utf-8", check=True,
     )
     return result.stdout.strip()

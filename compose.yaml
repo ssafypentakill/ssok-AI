@@ -1,0 +1,38 @@
+name: ssok-ai
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ssok_ai
+      POSTGRES_USER: ssok_ai
+      POSTGRES_PASSWORD: ${AI_DB_PASSWORD:?Set AI_DB_PASSWORD in .env}
+      TZ: Asia/Seoul
+    ports:
+      - "127.0.0.1:${AI_DB_PORT:-5433}:5432"
+    volumes:
+      - ai_db:/var/lib/postgresql/data
+      - ./docker/db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U ssok_ai -d ssok_ai"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+  embeddings:
+    build: ./docker/embeddings
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGHOST: db
+      PGUSER: ssok_ai
+      PGDATABASE: ssok_ai
+      PGPASSWORD: ${AI_DB_PASSWORD}
+    volumes:
+      - ./app:/work/app:ro
+      - ai_models:/work/.cache
+    working_dir: /work
+    command: python -m app.recommendation.store_mock_embeddings
+volumes:
+  ai_db:
+  ai_models:
